@@ -1,4 +1,5 @@
-﻿using RealmLibrary;
+﻿using System;
+using RealmLibrary;
 using Realms;
 
 namespace RealmTest.RealmObjets
@@ -7,18 +8,17 @@ namespace RealmTest.RealmObjets
     {
         public ObjectWithProgress()
         {
+            Key = Guid.NewGuid().ToString();
             Progress = 0;
         }
         
+        [PrimaryKey]
+        public string Key { get; set; }
+
         public int Progress
         {
             get;
-            private set;
-        }
-
-        public void IncreaseProgress()
-        {
-            this.Realm.RunInTransaction(() => Progress++);
+            set;
         }
 
         public void ResetProgress()

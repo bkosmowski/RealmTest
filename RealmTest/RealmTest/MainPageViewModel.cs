@@ -2,23 +2,24 @@
 using System.Reactive.Concurrency;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Threading;
 using System.Windows.Input;
 using Prism.Commands;
 using Prism.Mvvm;
 using RealmLibrary;
+using Realms;
 using RealmTest.RealmObjets;
 
 namespace RealmTest
 {
     public class MainPageViewModel : BindableBase
     {
-
         private readonly SerialDisposable _progressUpdate;
+        private readonly RealmConfiguration _config;
         public MainPageViewModel()
         {
             _progressUpdate = new SerialDisposable();
             var realmConfig = new RealmConfig();
+            _config = realmConfig.Config;
 
             ObjectWithProgress = new ObjectWithProgress();
 
@@ -30,20 +31,36 @@ namespace RealmTest
         private void StartProgress()
         {
             ObjectWithProgress.ResetProgress();
+
+            string key = ObjectWithProgress.Key;
+            
             _progressUpdate.Disposable = Observable.Interval(TimeSpan.FromMilliseconds(100))
-                .SubscribeOn(TaskPoolScheduler.Default)
-                .ObserveOn(SynchronizationContext.Current)
-                .Subscribe(_ => IncreaseProgress());
+                .ObserveOn(TaskPoolScheduler.Default)
+                .Subscribe(_ => IncreaseProgress(key));
         }
 
-        public void IncreaseProgress()
+        public void IncreaseProgress(string key)
         {
-            ObjectWithProgress.IncreaseProgress();
+            var otherRealmInstance = Realm.GetInstance(_config);
 
-            if (ObjectWithProgress.Progress >= 100)
+            var foundRealmObject = otherRealmInstance.Find(nameof(RealmObjets.ObjectWithProgress), key) as ObjectWithProgress;
+
+            using (var transaction = otherRealmInstance.BeginWrite())
+            {
+                if (foundRealmObject != null)
+                {
+                    foundRealmObject.Progress++;
+                }
+
+                transaction.Commit();
+            }
+
+            if (foundRealmObject?.Progress >= 100)
             {
                 _progressUpdate.Disposable = Disposable.Empty;
             }
+
+            otherRealmInstance.Dispose();
         }
 
         public ObjectWithProgress ObjectWithProgress { get; set; }
