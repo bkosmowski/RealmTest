@@ -1,0 +1,45 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2026
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmTest.Android", "RealmTest\RealmTest.Android\RealmTest.Android.csproj", "{D162E27D-B28F-45D8-9BFC-4B87C26CC0E2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealmTest", "RealmTest\RealmTest\RealmTest.csproj", "{6EB5F28C-DF0C-4BA8-BBCA-4C328DBE2454}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmLibrary", "RealmLibrary\RealmLibrary.csproj", "{2DB45E7D-C41A-4AAE-966C-FAF3E5887C26}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealmConsoleApp", "RealmConsoleApp\RealmConsoleApp.csproj", "{D1A45915-5B8F-49DF-A75E-65D5A082207F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D162E27D-B28F-45D8-9BFC-4B87C26CC0E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D162E27D-B28F-45D8-9BFC-4B87C26CC0E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D162E27D-B28F-45D8-9BFC-4B87C26CC0E2}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{D162E27D-B28F-45D8-9BFC-4B87C26CC0E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D162E27D-B28F-45D8-9BFC-4B87C26CC0E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D162E27D-B28F-45D8-9BFC-4B87C26CC0E2}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{6EB5F28C-DF0C-4BA8-BBCA-4C328DBE2454}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6EB5F28C-DF0C-4BA8-BBCA-4C328DBE2454}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6EB5F28C-DF0C-4BA8-BBCA-4C328DBE2454}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6EB5F28C-DF0C-4BA8-BBCA-4C328DBE2454}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2DB45E7D-C41A-4AAE-966C-FAF3E5887C26}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2DB45E7D-C41A-4AAE-966C-FAF3E5887C26}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2DB45E7D-C41A-4AAE-966C-FAF3E5887C26}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2DB45E7D-C41A-4AAE-966C-FAF3E5887C26}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D1A45915-5B8F-49DF-A75E-65D5A082207F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D1A45915-5B8F-49DF-A75E-65D5A082207F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D1A45915-5B8F-49DF-A75E-65D5A082207F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D1A45915-5B8F-49DF-A75E-65D5A082207F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A6E09EAD-0404-4C36-B339-343428D57D58}
+	EndGlobalSection
+EndGlobal
