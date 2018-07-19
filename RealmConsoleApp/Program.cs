@@ -1,8 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Reactive.Concurrency;
-using System.Reactive.Linq;
+using System.Threading;
 using RealmLibrary;
+using RealmLibrary.Models;
 using Realms;
 
 namespace RealmConsoleApp
@@ -13,85 +14,95 @@ namespace RealmConsoleApp
         {
             Console.WriteLine("Hello World!");
 
-            var realmConfig = new RealmConfig();
-
-            realmConfig.RunInTransaction(() =>
-            {
-                for (int index = 0; index < 10000; index++)
-                {
-                //    realmConfig.AddDogoWithoutWrite("Temp dogo", 10);
-                }
-            });
-            
-            UseObservableWithRealm();
 
             Console.ReadKey();
         }
 
-        public static void UseObservableWithRealm()
+        private static void RunRealmInManyThreads()
         {
-            //var realmConfig = new RealmConfig();
+            var realmConfig = new RealmConfig("RealmObject.realm");
 
-            //realmConfig.AddDogo("Wafel", 10);
+            var threads = new List<Thread>();
+            for (int index = 0; index < 10; index++)
+            {
+                threads.Add(new Thread(() =>
+                {
+                    var realm = Realm.GetInstance(realmConfig.Config);
 
-            //var allDogs = realmConfig.GetAllObjects<Dog>();
+                    realm.RunInTransaction(() =>
+                    {
+                        for (int i = 0; i < 10000; i++)
+                        {
+                            realm.Add(new Dog {Name = "temp", Age = 10});
+                        }
+                    });
 
-            //Console.WriteLine($"{allDogs.Count()} dogs in db");
+                    realm.All<Dog>().ToList();
+                }));
+            }
 
-            //var allPeople = realmConfig.GetAllObjects<Person>();
+            foreach (var thread in threads)
+            {
+                thread.Start();
+                thread.Join();
+            }
 
-            //Console.WriteLine($"{allPeople.Count()} people in db");
+            var realmWithoutUsing = Realm.GetInstance(realmConfig.Config);
 
+            var dogsWithoutUsing = realmWithoutUsing.All<Dog>();
 
-            //ObservableFactory.CreateSingle(() => realmConfig.WithRealm(realm =>
-            //    {
-            //        realm.Write(() => { realm.Add(new Dog("observable dog", 5, new Person("observer"))); });
+            realmWithoutUsing.RunInTransaction(() =>
+            {
+                foreach (var dog in dogsWithoutUsing)
+                {
+                    dog.Age = 20;
+                }
+            });
 
-            //        return realm.All<Dog>().ToList();
-            //    })).SubscribeOn(TaskPoolScheduler.Default)
-            //    .ObserveOn(Scheduler.Default)
-            //    .Subscribe(result =>
-            //    {
-            //        var realmInSubscription = Realm.GetInstance(realmConfig.Config);
+            var disposableRealmConfig = new RealmConfig("RealmObject_disposable.realm");
 
-            //        var updatedDogos = realmInSubscription.All<Dog>();
-            //        foreach (var dog in updatedDogos)
-            //        {
-            //            Console.WriteLine(dog.Name);
-            //        }
+            var disposabledThreads = new List<Thread>();
+            for (int index = 0; index < 10; index++)
+            {
+                disposabledThreads.Add(new Thread(() =>
+                {
+                    Realm.GetInstance(disposableRealmConfig.Config).Using(realm =>
+                    {
+                        realm.RunInTransaction(() =>
+                        {
+                            for (int i = 0; i < 10000; i++)
+                            {
+                                realm.Add(new Dog
+                                {
+                                    Name = "temp",
+                                    Age = 10
+                                });
+                            }
+                        });
 
-            //        Console.WriteLine($"{updatedDogos.Count()} dogs in db");
-            //    });
+                        realm.All<Dog>().ToList();
+                    });
+                }));
+            }
+
+            foreach (var disposabledThread in disposabledThreads)
+            {
+                disposabledThread.Start();
+                disposabledThread.Join();
+            }
+
+            Realm.GetInstance(realmConfig.Config).Using(realm =>
+            {
+                var dogWithUsing = realm.All<Dog>();
+
+                realm.RunInTransaction(() =>
+                {
+                    foreach (var dog in dogWithUsing)
+                    {
+                        dog.Age = 20;
+                    }
+                });
+            });
         }
-        
-        //var sw = new Stopwatch();
-
-        //realmConfig.AddDogo("temp", 1);
-
-        //var dogo = realmConfig.GetAllObjects<Dog>().First();
-
-        //sw.Start();
-
-        ////for (int index = 0; index < 10000; index++)
-        ////{
-        //    realmConfig.RemoveAndAdd(dogo);
-        ////}
-
-        //sw.Stop();
-
-        //Console.WriteLine($"Remove and add elapsed in {sw.ElapsedMilliseconds} ms");
-
-        //sw.Reset();
-
-        //sw.Start();
-
-        ////for (int index = 0; index < 10000; index++)
-        ////{
-        //    realmConfig.UpdateDog(dogo);
-        ////}
-
-        //sw.Stop();
-
-        //Console.WriteLine($"Update elapsed in {sw.ElapsedMilliseconds} ms");
     }
 }

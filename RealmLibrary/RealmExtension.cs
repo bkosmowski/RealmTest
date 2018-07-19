@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reactive.Linq;
 using System.Reflection;
 using Realms;
+using Realms.Exceptions;
 
 namespace RealmLibrary
 {
@@ -15,6 +16,18 @@ namespace RealmLibrary
             try
             {
                 return action(realm);
+            }
+            finally
+            {
+                realm.Dispose();
+            }
+        }
+
+        public static void Using(this Realm realm, Action<Realm> action)
+        {
+            try
+            {
+                action(realm);
             }
             finally
             {
